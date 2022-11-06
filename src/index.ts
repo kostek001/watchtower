@@ -27,7 +27,7 @@ bot.login(TOKEN);
 
 bot.once('ready', async () => {
     timeConsole(`Logged in as ${bot.user.tag}!\n`);
-    bot.user.setStatus('dnd');
+    bot.user.setStatus('offline');
 
     const guild = bot.guilds.cache.get('850803221559771186');
     const channel = guild.channels.cache.get('850803221559771190');
@@ -44,14 +44,11 @@ bot.once('ready', async () => {
             var newUser = newPresences[i][1];
             var oldUser = oldPresences[i][1];
             if(newUser.userId == oldUser.userId && (newUser.status != oldUser.status || newUser.activities[0]?.name != oldUser.activities[0]?.name)){
-                timeConsole(`${newUser.userId} - ${oldUser.status} => ${newUser.status} | ${oldUser.activities} => ${newUser.activities}\n\n`); 
-                console.log(bot.users.cache.find((u: any) => u.id === newUser.userId).tag);
-                /*
-                var sql = `INSERT INTO status (USER_ID, DATE, STATUS, ACTIVITIES) VALUES ('${parseInt(newUser.userId)}', '${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${newUser.status}', '${newUser.activities[0]?.name ?? null}')`;
+                timeConsole(`${bot.users.cache.find((u: any) => u.id === newUser.userId).tag} - ${oldUser.status} => ${newUser.status} | ${oldUser.activities} => ${newUser.activities}\n\n`); 
+                var sql = `INSERT INTO status (USER_ID, DATE, USERNAME, STATUS, ACTIVITIES) VALUES ('${parseInt(newUser.userId)}', '${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${bot.users.cache.find((u: any) => u.id === newUser.userId).tag}', '${newUser.status}', '${newUser.activities[0]?.name ?? null}')`;
                 con.query(sql, function (err: any) {
                     if (err) throw err;
                 });
-                */
             }
         }
         oldPresences = await JSON.parse(JSON.stringify(newPresences));

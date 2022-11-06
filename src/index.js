@@ -29,7 +29,7 @@ var oldPresences;
 bot.login(TOKEN);
 bot.once('ready', () => __awaiter(void 0, void 0, void 0, function* () {
     timeConsole(`Logged in as ${bot.user.tag}!\n`);
-    bot.user.setStatus('dnd');
+    bot.user.setStatus('offline');
     const guild = bot.guilds.cache.get('850803221559771186');
     const channel = guild.channels.cache.get('850803221559771190');
     for (let index = 0; index <= guild.memberCount; index += 100) {
@@ -37,7 +37,7 @@ bot.once('ready', () => __awaiter(void 0, void 0, void 0, function* () {
         yield delay(500);
     }
     setInterval(function main() {
-        var _a, _b;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             var newPresences = JSON.parse(JSON.stringify(Array.from(guild.presences.cache)));
             oldPresences = oldPresences !== null && oldPresences !== void 0 ? oldPresences : newPresences;
@@ -45,14 +45,12 @@ bot.once('ready', () => __awaiter(void 0, void 0, void 0, function* () {
                 var newUser = newPresences[i][1];
                 var oldUser = oldPresences[i][1];
                 if (newUser.userId == oldUser.userId && (newUser.status != oldUser.status || ((_a = newUser.activities[0]) === null || _a === void 0 ? void 0 : _a.name) != ((_b = oldUser.activities[0]) === null || _b === void 0 ? void 0 : _b.name))) {
-                    timeConsole(`${newUser.userId} - ${oldUser.status} => ${newUser.status} | ${oldUser.activities} => ${newUser.activities}\n\n`);
-                    console.log(bot.users.cache.find((u) => u.id === newUser.userId).tag);
-                    /*
-                    var sql = `INSERT INTO status (USER_ID, DATE, STATUS, ACTIVITIES) VALUES ('${parseInt(newUser.userId)}', '${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${newUser.status}', '${newUser.activities[0]?.name ?? null}')`;
-                    con.query(sql, function (err: any) {
-                        if (err) throw err;
+                    timeConsole(`${bot.users.cache.find((u) => u.id === newUser.userId).tag} - ${oldUser.status} => ${newUser.status} | ${oldUser.activities} => ${newUser.activities}\n\n`);
+                    var sql = `INSERT INTO status (USER_ID, DATE, USERNAME, STATUS, ACTIVITIES) VALUES ('${parseInt(newUser.userId)}', '${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${bot.users.cache.find((u) => u.id === newUser.userId).tag}', '${newUser.status}', '${(_d = (_c = newUser.activities[0]) === null || _c === void 0 ? void 0 : _c.name) !== null && _d !== void 0 ? _d : null}')`;
+                    con.query(sql, function (err) {
+                        if (err)
+                            throw err;
                     });
-                    */
                 }
             }
             oldPresences = yield JSON.parse(JSON.stringify(newPresences));
