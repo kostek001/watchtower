@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * THE WATCHTOWER
+ * VER 0.2
+ *
+ * Author: Kostek001
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -29,7 +35,7 @@ var oldPresences;
 bot.login(TOKEN);
 bot.once('ready', () => __awaiter(void 0, void 0, void 0, function* () {
     timeConsole(`Logged in as ${bot.user.tag}!\n`);
-    bot.user.setStatus('offline');
+    bot.user.setStatus('invisible');
     const guild = bot.guilds.cache.get('850803221559771186');
     const channel = guild.channels.cache.get('850803221559771190');
     for (let index = 0; index <= guild.memberCount; index += 100) {

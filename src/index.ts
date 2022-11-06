@@ -1,3 +1,12 @@
+/**
+ * THE WATCHTOWER
+ * VER 0.2
+ * 
+ * Author: Kostek001
+ */
+
+
+
 require('dotenv').config();
 const { Client } = require('discord.js-selfbot-v13');
 const dayjs = require('dayjs');
@@ -27,7 +36,7 @@ bot.login(TOKEN);
 
 bot.once('ready', async () => {
     timeConsole(`Logged in as ${bot.user.tag}!\n`);
-    bot.user.setStatus('offline');
+    bot.user.setStatus('invisible');
 
     const guild = bot.guilds.cache.get('850803221559771186');
     const channel = guild.channels.cache.get('850803221559771190');
