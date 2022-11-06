@@ -1,0 +1,20 @@
+{
+  "name": "the-watchtower",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mysql": "^2.15.21",
+    "@types/node": "^18.7.14",
+    "typescript": "^4.8.2"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.5",
+    "discord.js-selfbot-v13": "^2.6.10",
+    "dotenv": "^16.0.3",
+    "mysql": "^2.18.1"
+  }
+}
