@@ -53,7 +53,7 @@ bot.once('ready', async () => {
             var newUser = newPresences[i][1];
             var oldUser = oldPresences[i][1];
             if(newUser.userId == oldUser.userId && (newUser.status != oldUser.status || newUser.activities[0]?.name != oldUser.activities[0]?.name)){
-                timeConsole(`${bot.users.cache.find((u: any) => u.id === newUser.userId).tag} - ${oldUser.status} => ${newUser.status} | ${oldUser.activities} => ${newUser.activities}\n\n`); 
+                timeConsole(`${bot.users.cache.find((u: any) => u.id === newUser.userId).tag} - ${oldUser.status} => ${newUser.status} | ${newUser.activities[0]?.name ?? "Brak"} => ${newUser.activities[0]?.name ?? "Brak"}\n\n`); 
                 var sql = `INSERT INTO status (USER_ID, DATE, USERNAME, STATUS, ACTIVITIES) VALUES ('${parseInt(newUser.userId)}', '${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${bot.users.cache.find((u: any) => u.id === newUser.userId).tag}', '${newUser.status}', '${newUser.activities[0]?.name ?? null}')`;
                 con.query(sql, function (err: any) {
                     if (err) throw err;
