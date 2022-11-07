@@ -36,8 +36,8 @@ bot.login(TOKEN);
 bot.once('ready', () => __awaiter(void 0, void 0, void 0, function* () {
     timeConsole(`Logged in as ${bot.user.tag}!\n`);
     bot.user.setStatus('invisible');
-    const guild = bot.guilds.cache.get('850803221559771186');
-    const channel = guild.channels.cache.get('850803221559771190');
+    const guild = bot.guilds.cache.get('868240412677120020');
+    const channel = guild.channels.cache.get('967003265906651136');
     for (let index = 0; index <= guild.memberCount; index += 100) {
         yield guild.members.fetchMemberList(channel, index);
         yield delay(500);
