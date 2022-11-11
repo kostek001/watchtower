@@ -52,7 +52,7 @@ bot.once('ready', async () => {
         for(let i = 0; i < newPresences.length; i++){
             var newUser = newPresences[i][1];
             var oldUser = oldPresences[i][1];
-            if(newUser.userId == "idle") newUser.userId = "online";
+            if(newUser.status == "idle" || newUser.status == "dnd") newUser.status = "online";
             if(newUser.userId == oldUser.userId && (newUser.status != oldUser.status || newUser.activities[0]?.name != oldUser.activities[0]?.name)){
                 timeConsole(`${bot.users.cache.find((u: any) => u.id === newUser.userId).tag} - ${oldUser.status} => ${newUser.status} | ${oldUser.activities[0]?.name ?? "Brak"} => ${newUser.activities[0]?.name ?? "Brak"}`); 
                 var sql = `INSERT INTO status (USER_ID, USERNAME, STATUS, ACTIVITIES) VALUES ('${parseInt(newUser.userId)}', '${bot.users.cache.find((u: any) => u.id === newUser.userId).tag}', '${newUser.status}', '${newUser.activities[0]?.name ?? null}')`;
