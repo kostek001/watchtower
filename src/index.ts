@@ -19,7 +19,7 @@ const DB_PASSWORD = process.env.DB_PASSWORD;
 //=====================================================
 
 var con = mysql.createPool({
-    connectionLimit : 10,
+    connectionLimit: 10,
     host: "192.168.88.8",
     user: "watcher",
     password: DB_PASSWORD,
@@ -40,24 +40,45 @@ bot.once('ready', async () => {
 
     const guild = bot.guilds.cache.get('868240412677120020');
     const channel = guild.channels.cache.get('967003265906651136');
-    for(let index = 0; index <= guild.memberCount; index += 100){
+    for (let index = 0; index <= guild.memberCount; index += 100) {
         await guild.members.fetchMemberList(channel, index);
         await delay(500);
     }
 
     setInterval(async function main() {
         var newPresences: Array<any> = JSON.parse(JSON.stringify(Array.from(guild.presences.cache)));
-        
+
         oldPresences = oldPresences ?? newPresences;
-        for(let i = 0; i < newPresences.length; i++){
+        for (let i = 0; i < newPresences.length; i++) {
             var newUser = newPresences[i][1];
             var oldUser = oldPresences[i][1];
-            if(newUser.status == "idle" || newUser.status == "dnd") newUser.status = "online";
-            if(newUser.userId == oldUser.userId && (newUser.status != oldUser.status || newUser.activities[0]?.name != oldUser.activities[0]?.name)){
-                timeConsole(`${bot.users.cache.find((u: any) => u.id === newUser.userId).tag} - ${oldUser.status} => ${newUser.status} | ${oldUser.activities[0]?.name ?? "Brak"} => ${newUser.activities[0]?.name ?? "Brak"}`); 
-                var sql = `INSERT INTO status (USER_ID, USERNAME, STATUS, ACTIVITIES) VALUES ('${parseInt(newUser.userId)}', '${bot.users.cache.find((u: any) => u.id === newUser.userId).tag}', '${newUser.status}', '${newUser.activities[0]?.name ?? null}')`;
-                con.query(sql, function (err: any) {
+
+            if (newUser.status == "idle" || newUser.status == "dnd") newUser.status = "online";
+            if (newUser.userId == oldUser.userId && (newUser.status != oldUser.status || newUser.activities[0]?.name != oldUser.activities[0]?.name)) {
+                var newUsername = bot.users.cache.find((u: any) => u.id === newUser.userId).tag;
+                var newUserId = newUser.userId;
+
+                timeConsole(`${newUsername} - ${oldUser.status} => ${newUser.status} | ${oldUser.activities[0]?.name ?? "Brak"} => ${newUser.activities[0]?.name ?? "Brak"}`);
+                con.query(`INSERT INTO status (USER_ID, STATUS, ACTIVITIES) VALUES ('${parseInt(newUserId)}', '${newUser.status}', '${newUser.activities[0]?.name ?? null}')`, function (err: any) {
                     if (err) throw err;
+                });
+
+                con.query(`SELECT USERNAME FROM names where USER_ID like '${parseInt(newUserId)}' LIMIT 1`, function (err: any, result: any, fields: any) {
+                    if (err) throw err;
+                    result = result[0];
+                    
+                    if (result?.USERNAME != newUsername && result) {
+                        con.query(`UPDATE names SET USERNAME = '${newUsername}' WHERE USER_ID = '${parseInt(newUserId)}'`, function (err: any) {
+                            if (err) throw err;
+                        });
+                        timeConsole(`UPDATED ${newUserId} => ${newUsername}`);
+                    }
+                    else if (!result) {
+                        con.query(`INSERT INTO names (USER_ID, USERNAME) VALUES ('${parseInt(newUserId)}', '${newUsername}')`, function (err: any) {
+                            if (err) throw err;
+                        });
+                        timeConsole(`CREATED ${newUserId} => ${newUsername}`);
+                    }
                 });
             }
         }
@@ -65,10 +86,10 @@ bot.once('ready', async () => {
     }, 20000);
 });
 
-function timeConsole(message: string){
+function timeConsole(message: string) {
     console.info("[" + dayjs().format('HH:mm') + "]", message);
 }
 
 function delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
+    return new Promise(resolve => setTimeout(resolve, ms));
 }

@@ -53,11 +53,31 @@ bot.once('ready', () => __awaiter(void 0, void 0, void 0, function* () {
                 if (newUser.status == "idle" || newUser.status == "dnd")
                     newUser.status = "online";
                 if (newUser.userId == oldUser.userId && (newUser.status != oldUser.status || ((_a = newUser.activities[0]) === null || _a === void 0 ? void 0 : _a.name) != ((_b = oldUser.activities[0]) === null || _b === void 0 ? void 0 : _b.name))) {
-                    timeConsole(`${bot.users.cache.find((u) => u.id === newUser.userId).tag} - ${oldUser.status} => ${newUser.status} | ${(_d = (_c = oldUser.activities[0]) === null || _c === void 0 ? void 0 : _c.name) !== null && _d !== void 0 ? _d : "Brak"} => ${(_f = (_e = newUser.activities[0]) === null || _e === void 0 ? void 0 : _e.name) !== null && _f !== void 0 ? _f : "Brak"}`);
-                    var sql = `INSERT INTO status (USER_ID, USERNAME, STATUS, ACTIVITIES) VALUES ('${parseInt(newUser.userId)}', '${bot.users.cache.find((u) => u.id === newUser.userId).tag}', '${newUser.status}', '${(_h = (_g = newUser.activities[0]) === null || _g === void 0 ? void 0 : _g.name) !== null && _h !== void 0 ? _h : null}')`;
-                    con.query(sql, function (err) {
+                    var newUsername = bot.users.cache.find((u) => u.id === newUser.userId).tag;
+                    var newUserId = newUser.userId;
+                    timeConsole(`${newUsername} - ${oldUser.status} => ${newUser.status} | ${(_d = (_c = oldUser.activities[0]) === null || _c === void 0 ? void 0 : _c.name) !== null && _d !== void 0 ? _d : "Brak"} => ${(_f = (_e = newUser.activities[0]) === null || _e === void 0 ? void 0 : _e.name) !== null && _f !== void 0 ? _f : "Brak"}`);
+                    con.query(`INSERT INTO status (USER_ID, STATUS, ACTIVITIES) VALUES ('${parseInt(newUserId)}', '${newUser.status}', '${(_h = (_g = newUser.activities[0]) === null || _g === void 0 ? void 0 : _g.name) !== null && _h !== void 0 ? _h : null}')`, function (err) {
                         if (err)
                             throw err;
+                    });
+                    con.query(`SELECT USERNAME FROM names where USER_ID like '${parseInt(newUserId)}' LIMIT 1`, function (err, result, fields) {
+                        if (err)
+                            throw err;
+                        result = result[0];
+                        if ((result === null || result === void 0 ? void 0 : result.USERNAME) != newUsername && result) {
+                            con.query(`UPDATE names SET USERNAME = '${newUsername}' WHERE USER_ID = '${parseInt(newUserId)}'`, function (err) {
+                                if (err)
+                                    throw err;
+                            });
+                            timeConsole(`UPDATED ${newUserId} => ${newUsername}`);
+                        }
+                        else if (!result) {
+                            con.query(`INSERT INTO names (USER_ID, USERNAME) VALUES ('${parseInt(newUserId)}', '${newUsername}')`, function (err) {
+                                if (err)
+                                    throw err;
+                            });
+                            timeConsole(`CREATED ${newUserId} => ${newUsername}`);
+                        }
                     });
                 }
             }
