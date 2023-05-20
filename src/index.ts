@@ -14,16 +14,19 @@ const mysql = require('mysql');
 
 const bot = new Client({ checkUpdate: false });
 const TOKEN = process.env.TOKEN;
+const DB_HOST = process.env.DB_HOST;
+const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
+const DB_NAME = process.env.DB_NAME;
 
 //=====================================================
 
 var con = mysql.createPool({
     connectionLimit: 10,
-    host: "192.168.88.8",
-    user: "watcher",
+    host: DB_HOST,
+    user: DB_USER,
     password: DB_PASSWORD,
-    database: "watcher"
+    database: DB_NAME
 });
 
 //=====================================================
