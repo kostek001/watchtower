@@ -1,10 +1,10 @@
 "use strict";
-/**
- * THE WATCHTOWER
- * VER 0.2
- *
- * Author: Kostek001
- */
+/*
+
+WATCHTOWER
+by Kostek001
+
+*/
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,33 +14,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-require('dotenv').config();
-const { Client } = require('discord.js-selfbot-v13');
-const dayjs = require('dayjs');
-const mysql = require('mysql');
+require("dotenv").config();
+const { Client } = require("discord.js-selfbot-v13");
+const dayjs = require("dayjs");
+const mysql = require("mysql");
 const bot = new Client({ checkUpdate: false });
-const TOKEN = process.env.TOKEN;
-const DB_HOST = process.env.DB_HOST;
-const DB_USER = process.env.DB_USER;
-const DB_PASSWORD = process.env.DB_PASSWORD;
-const DB_NAME = process.env.DB_NAME;
 //=====================================================
 var con = mysql.createPool({
     connectionLimit: 10,
-    host: DB_HOST,
-    user: DB_USER,
-    password: DB_PASSWORD,
-    database: DB_NAME
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
 });
 //=====================================================
 var oldPresences;
 //=====================================================
-bot.login(TOKEN);
-bot.once('ready', () => __awaiter(void 0, void 0, void 0, function* () {
+bot.login(process.env.TOKEN);
+bot.once("ready", () => __awaiter(void 0, void 0, void 0, function* () {
     timeConsole(`Logged in as ${bot.user.tag}!\n`);
-    bot.user.setStatus('invisible');
-    const guild = bot.guilds.cache.get('868240412677120020');
-    const channel = guild.channels.cache.get('967003265906651136');
+    bot.user.setStatus("invisible");
+    const guild = bot.guilds.cache.get(process.env.GUILD_ID);
+    const channel = guild.channels.cache.get(process.env.CHANNEL_ID);
     for (let index = 0; index <= guild.memberCount; index += 100) {
         yield guild.members.fetchMemberList(channel, index);
         yield delay(500);
@@ -55,7 +50,9 @@ bot.once('ready', () => __awaiter(void 0, void 0, void 0, function* () {
                 var oldUser = oldPresences[i][1];
                 if (newUser.status == "idle" || newUser.status == "dnd")
                     newUser.status = "online";
-                if (newUser.userId == oldUser.userId && (newUser.status != oldUser.status || ((_a = newUser.activities[0]) === null || _a === void 0 ? void 0 : _a.name) != ((_b = oldUser.activities[0]) === null || _b === void 0 ? void 0 : _b.name))) {
+                if (newUser.userId == oldUser.userId &&
+                    (newUser.status != oldUser.status ||
+                        ((_a = newUser.activities[0]) === null || _a === void 0 ? void 0 : _a.name) != ((_b = oldUser.activities[0]) === null || _b === void 0 ? void 0 : _b.name))) {
                     var newUsername = bot.users.cache.find((u) => u.id === newUser.userId).tag;
                     var newUserId = newUser.userId;
                     timeConsole(`${newUsername} - ${oldUser.status} => ${newUser.status} | ${(_d = (_c = oldUser.activities[0]) === null || _c === void 0 ? void 0 : _c.name) !== null && _d !== void 0 ? _d : "Brak"} => ${(_f = (_e = newUser.activities[0]) === null || _e === void 0 ? void 0 : _e.name) !== null && _f !== void 0 ? _f : "Brak"}`);
@@ -89,8 +86,8 @@ bot.once('ready', () => __awaiter(void 0, void 0, void 0, function* () {
     }, 20000);
 }));
 function timeConsole(message) {
-    console.info("[" + dayjs().format('HH:mm') + "]", message);
+    console.info("[" + dayjs().format("HH:mm") + "]", message);
 }
 function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }

@@ -1,10 +1,10 @@
 {
-  "name": "the-watchtower",
+  "name": "watchtower",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "keywords": [],
-  "author": "",
+  "author": "Kostek001",
   "license": "ISC",
   "devDependencies": {
     "@types/mysql": "^2.15.21",
